@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 발화자 관련 쿼리 -->
+<mapper namespace="SpeakerMapper">
+	<!-- speaker 테이블에 데이터를 입력함 -->
+	<select id="insertIntoSpeaker" parameterType="kr.com.inspect.dto.Speaker">
+  		INSERT INTO audio.speaker
+	  		(no, shortcut, occupation, sex, name, age, metadata_id)
+	  		VALUES(#{no}, #{shortcut}, #{occupation}, #{sex}, #{name}, #{age}, #{metadata_id});
+	</select>
+</mapper>

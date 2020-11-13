@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 메타데이터 관련 쿼리 -->
+<mapper namespace="MetadataMapper">
+	<resultMap id="metadataAndProgram" type="kr.com.inspect.dto.Metadata">
+   		<id column="metadata_id" property="id" />
+    	<result column="creator" property="creator" />
+    	<result column="annotation_level" property="annotation_level" />
+    	<result column="metadata_year" property="year" />
+    	<result column="sampling" property="sampling" />
+    	<result column="metadata_title" property="title" />
+    	<result column="category" property="category" />
+    	<result column="distributor" property="distributor" />
+    	<result column="relation" property="relation" />
+    	<result column="sentence_count" property="sentence_count" />
+    	<result column="eojeol_total" property="eojeol_total" />
+    	<collection property="program" javaType="kr.com.inspect.dto.Program">
+      		<id column="program_id" property="id"/>
+      		<result column="file_num" property="file_num"/>
+      		<result column="program_title" property="title"/>
+      		<result column="subtitle" property="subtitle"/>
+			<result column="running_time" property="running_time"/>
+		</collection>
+	</resultMap>
+	
+	<!-- metadata 테이블에 데이터를 입력함 -->
+	<insert id="insertIntoMetadata" parameterType="kr.com.inspect.dto.Metadata">
+		INSERT INTO audio.metadata
+			(creator, annotation_level, year, sampling, title, category, distributor, relation)
+			VALUES(#{creator}, #{annotation_level}, #{year}, #{sampling}, #{title}, #{category}, #{distributor}, #{relation});
+	</insert>
+	
+	<!-- creator와 title로 auto increment된 metadata id를 받아옴(다른 테이블의 외래키 입력을 위함) -->
+	<select id="getMetadataId" parameterType="map" resultType="int">
+		SELECT 
+			id 
+		FROM 
+			audio.metadata 
+		WHERE 
+			creator = #{creator} AND title = #{title};
+	</select>
+	
+	<!-- creator, title로 metadata id가 존재하는지 확인함(중복 등록 방지) -->
+	<select id="isExistMetadataId" parameterType="map" resultType="string">
+		SELECT 
+			id
+		FROM 
+			audio.metadata
+		WHERE 
+			creator = #{creator} AND title = #{title};
+	</select>
+
+	<!-- metadata 테이블 가져오기 -->
+	<select id="getMetadata" resultType="kr.com.inspect.dto.Metadata">
+		SELECT * 
+		FROM 
+			audio.metadata;
+	</select>
+
+	<!-- id를 이용해서 metadata 데이터 가져오기 -->
+	<select id="getMetadataById" parameterType="int" resultType="kr.com.inspect.dto.Metadata">
+		SELECT * 
+		FROM 
+			audio.metadata
+		WHERE 
+			id = #{id};
+	</select>
+	
+	<!-- Metadata와 Program을 조인해서 가져옴 -->
+	<select id="getMetadataAndProgram" resultType="kr.com.inspect.dto.Metadata" resultMap="metadataAndProgram">
+  		SELECT
+  			m.id metadata_id,
+  			m.creator creator,
+  			m.annotation_level annotation_level,
+  			m.year metadata_year,
+  			m.sampling sampling,
+  			m.title metadata_title,
+  			m.category category,
+  			m.distributor distributor,
+  			m.relation relation,
+  			p.id program_id,
+  			p.file_num file_num,
+  			p.title program_title,
+  			p.subtitle subtitle,
+  			p.running_time running_time,
+			ut.sentence_count sentence_count,
+			eo.eojeol_total eojeol_total
+  		FROM
+  			audio.metadata m
+  		LEFT JOIN audio.program p 
+		ON
+  			m.title = p.file_num
+		LEFT JOIN 
+			(SELECT metadata_id, COUNT(form) sentence_count
+				FROM audio.utterance
+				GROUP BY metadata_id) ut
+		ON
+			m.id = ut.metadata_id
+		LEFT JOIN 
+			(SELECT metadata_id, COUNT(standard) eojeol_total
+				FROM audio.eojeolList
+				GROUP BY metadata_id) eo
+		ON
+			m.id = eo.metadata_id;
+	</select>
+
+	<!-- Metadata와 Program을 조인한 것을 id로 가져옴 -->
+	<select id="getMetadataAndProgramUsingId" resultType="kr.com.inspect.dto.Metadata" resultMap="metadataAndProgram" parameterType="Integer">
+		SELECT
+  			m.id metadata_id,
+  			m.creator creator,
+  			m.annotation_level annotation_level,
+  			m.year metadata_year,
+  			m.sampling sampling,
+  			m.title metadata_title,
+  			m.category category,
+  			m.distributor distributor,
+  			m.relation relation,
+  			p.id program_id,
+  			p.file_num file_num,
+  			p.title program_title,
+  			p.subtitle subtitle,
+  			p.running_time running_time,
+			ut.sentence_count sentence_count,
+			eo.eojeol_total eojeol_total
+  		FROM
+  			audio.metadata m
+  		LEFT JOIN audio.program p 
+		ON
+  			m.title = p.file_num
+		LEFT JOIN 
+			(SELECT metadata_id, COUNT(form) sentence_count
+				FROM audio.utterance
+				GROUP BY metadata_id) ut
+		ON
+			m.id = ut.metadata_id
+		LEFT JOIN 
+			(SELECT metadata_id, COUNT(standard) eojeol_total
+				FROM audio.eojeolList
+				GROUP BY metadata_id) eo
+		ON
+			m.id = eo.metadata_id
+		WHERE 
+			m.id = #{metaId};
+	</select>
+</mapper>

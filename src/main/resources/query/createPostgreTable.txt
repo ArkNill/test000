@@ -1,0 +1,67 @@
+# PostgreSQL 테이블 생성
+
+CREATE TABLE audio.metadata (
+    id SERIAL PRIMARY KEY,
+    creator text,
+    annotation_level text,
+    year text,
+    sampling text,
+    title text NOT NULL,
+    category text,
+    distributor text,
+    relation text
+); 
+
+CREATE TABLE audio.speaker (
+	id SERIAL PRIMARY KEY,
+	no integer NOT NULL,
+	shortcut integer,
+	occupation text,
+	sex text,
+	name text,
+	age integer,
+	metadata_id integer REFERENCES audio.metadata ON DELETE CASCADE
+);
+
+CREATE TABLE audio.utterance (
+	id text PRIMARY KEY,
+	note text,
+	standard_form text,
+	form text,
+	speaker_no text,
+	start numeric,
+	finish numeric,
+	metadata_id integer REFERENCES audio.metadata ON DELETE CASCADE
+);
+
+CREATE TABLE audio.eojeolList (
+	id text PRIMARY KEY,
+	standard text,
+	eojeol text,
+	finish integer,
+	isDialect boolean,
+	begin integer,
+	utterance_id text REFERENCES audio.utterance ON DELETE CASCADE, 
+	metadata_id integer REFERENCES audio.metadata ON DELETE CASCADE
+);
+
+CREATE TABLE audio.program (
+	id integer PRIMARY KEY,
+	file_num text,
+	title text,
+	subtitle text,
+	running_time text
+);
+
+CREATE TABLE audio.member (
+	member_id text PRIMARY KEY,
+	pwd text NOT NULL
+);
+
+CREATE TABLE audio.jsonLog (
+    id SERIAL PRIMARY KEY,
+    title text,
+    start text,
+    finish text,
+    elapsed text
+);

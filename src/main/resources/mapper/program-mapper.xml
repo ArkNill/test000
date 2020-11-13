@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 강의 프로그램 관련 쿼리 -->
+<mapper namespace="ProgramMapper">
+	<!--  program 테이블에 데이터를 입력함 -->
+	<insert id="insertIntoProgram" parameterType="kr.com.inspect.dto.Program">
+		INSERT INTO audio.program
+			(id, file_num, title, subtitle, running_time)
+			VALUES(#{id}, #{file_num}, #{title}, #{subtitle}, #{running_time});
+	</insert>
+	
+	<!-- file_num으로 프로그램 데이터를 받아옴(중복 등록 방지를 위함) -->
+	<select id="getProgramByFileNum" parameterType="String" resultType="kr.com.inspect.dto.Program">
+		SELECT * 
+		FROM 
+			audio.program
+		WHERE 
+			file_num = #{file_num};
+	</select>
+</mapper>

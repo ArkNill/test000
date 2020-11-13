@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 발화(문장 단위) 관련 쿼리 -->
+<mapper namespace="UtteranceMapper">
+	<resultMap id="utteranceWithEojeolCount" type="kr.com.inspect.dto.Utterance">
+   		<id column="id" property="id" />
+    	<result column="note" property="note" />
+    	<result column="standard_form" property="standard_form" />
+    	<result column="form" property="form" />
+    	<result column="speaker_no" property="speaker_no" />
+    	<result column="start" property="start" />
+    	<result column="finish" property="finish" />
+    	<result column="eojeol_count" property="eojeol_count" />
+	</resultMap>
+	
+	<!-- utterance 테이블에 데이터를 입력함 -->
+	<insert id="insertIntoUtterance" parameterType="kr.com.inspect.dto.Utterance">
+		INSERT INTO audio.utterance
+			(id, note, standard_form, form, speaker_no, start, finish, metadata_id)
+			VALUES(#{id}, #{note}, #{standard_form}, #{form}, #{speaker_no}, #{start}, #{finish}, #{metadata_id});
+	</insert>
+	
+	<!-- Metadata id로 Utterance를 가져옴(어절 개수 포함) -->
+	<select id="getUtteranceByMetadataId" parameterType="Integer" resultType="kr.com.inspect.dto.Utterance" resultMap="utteranceWithEojeolCount">
+  		SELECT id, note, standard_form, form, speaker_no, start, finish, eojeol_count
+			FROM audio.utterance u
+			LEFT JOIN (SELECT utterance_id utterance_id, COUNT(standard) eojeol_count
+							FROM audio.eojeolList
+							GROUP BY utterance_id) e
+			ON u.id = e.utterance_id
+			WHERE u.metadata_id = #{value}
+			ORDER BY u.start;
+	</select>
+</mapper>

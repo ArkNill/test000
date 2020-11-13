@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- json 입력 측정 로그 관련 쿼리 -->
+<mapper namespace="JsonLogMapper">
+	<resultMap id="jsonLogAndProgram" type="kr.com.inspect.dto.JsonLog">
+   		<id column="id" property="id" />
+    	<result column="file_num" property="title" />
+    	<result column="starting" property="start" />
+    	<result column="finish" property="finish" />
+    	<result column="elapsed" property="elapsed" />
+    	<collection property="program" javaType="kr.com.inspect.dto.Program">
+      		<result column="title" property="title"/>
+      		<result column="subtitle" property="subtitle"/>
+			<result column="running_time" property="running_time"/>
+		</collection>
+	</resultMap>
+
+	<!-- JsonLog 테이블에 데이터를 입력함 -->
+	<insert id="insertIntoJsonLog" parameterType="kr.com.inspect.dto.JsonLog">
+		INSERT INTO audio.jsonlog
+			(title, start, finish, elapsed)
+			VALUES(#{title}, #{start}, #{finish}, #{elapsed});
+	</insert>
+	
+	<!-- JsonLog 테이블 가져오기 -->
+	<select id="getJsonLog" resultMap="jsonLogAndProgram" resultType="kr.com.inspect.dto.JsonLog">
+  		SELECT
+			j.id id,
+			j.title file_num,
+			j.start starting,
+			j.finish finish,
+			j.elapsed elapsed,
+			p.title title,
+			p.subtitle subtitle,
+			p.running_time running_time
+		FROM
+			(SELECT * FROM audio.jsonlog) j
+		LEFT JOIN 
+			audio.program p 
+		ON
+			j.title = p.file_num;
+	</select>
+</mapper>

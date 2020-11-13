@@ -1,0 +1,31 @@
+  .dashboardBody {
+  	margin: 0 auto;
+  	text-align: center;
+  }
+  
+  .chartTable th, .chartTable td {
+		paddding: 30px;
+		border: 1px solid black;
+	}
+	
+	.inline-block-chart {
+		display : inline-block;
+	}
+  
+  #bar-svg-area1 {
+	  position: relative;
+	}
+	
+	#bar-tooltip1 {
+	  position: absolute;
+	  opacity: 0;
+	  width: 40px;
+	  height: 20px;
+	  line-height: 20px;
+	  transition: all 0.3s;
+	  border-radius: 5px;
+	  text-align: center;
+	  color: #fff;
+	  font-size: 14px;
+	  font-weight: bold;
+	}
