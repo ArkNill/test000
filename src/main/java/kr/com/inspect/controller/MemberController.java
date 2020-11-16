@@ -1,5 +1,7 @@
 package kr.com.inspect.controller;
 
+import java.awt.print.Printable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -38,6 +40,7 @@ public class MemberController {
 	public String IdCheck(HttpServletRequest request) {
 		String member_id = request.getParameter("member_id");
 		int result = loginService.IdCheck(member_id);
+		System.out.println("asfas");
 		return Integer.toString(result);
 	}
 	
@@ -93,6 +96,7 @@ public class MemberController {
 	@GetMapping("/memberList")
 	public String getMember() {
 		return "member/getMemberList";
+	 
 	}
 	
 	/* 2020-11-13 */
