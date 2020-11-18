@@ -106,5 +106,5 @@ public class MemberController {
 	///asdfasdfasdfasfds
 	//asdfasdfasdfasdfs
 	//asdfasdfasdfasfawd
-	//1118 build/asdssadfasdfsfasdf
+	//1118 build/asdssadfasdfsfasdfafsdfas
 }
