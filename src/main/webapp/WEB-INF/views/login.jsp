@@ -39,12 +39,12 @@ src="${pageContext.request.contextPath}/resource/js/index/login.js"></script>
 	<form id="loginForm" action="${pageContext.request.contextPath}/loginMember" method="post">
 		<div class="form-group">
 			<input type="text" class="form-control form-control-user"
-				id="login_member_id" name="member_id" placeholder="Enter ID">
+				id="login_member_id" name="member_id" placeholder="CICD TEST">
 		</div>
 		
 		<div class="form-group">
 			<input type="password" class="form-control form-control-user"
-				id="login_pwd" name="pwd" placeholder="Password">
+				id="login_pwd" name="pwd" placeholder="CICD Password">
 		</div>
 
 		<div class="form-group">
